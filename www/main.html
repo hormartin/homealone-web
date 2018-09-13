@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Homealone</title>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+		<link href="/haz/css/style.css" rel="stylesheet" type="text/css">
+		<script src="/haz/common.js"></script>
+		<script>
+			function teszt() {
+				getvalueat("CO", "2018-08-14 06:35:39", function(success, value) { alert("s: "+ success + ", value: " + value); });
+			}
+			                                      
+			function load() {
+				var username = "";
+				
+				getusername(function(success, name) {
+					if(success) {
+						username = name;
+						document.getElementById("user").innerHTML = '<i class="fas fa-user"></i> ' + username;
+					}
+					else alert("Internal Server Error 500");
+				} );
+				
+			}
+			
+		</script>
+	</head>
+	<body onload="load();">
+		<nav>
+			<ul>
+				<li class="dropdown-wrap">
+					<a class="dropbtn" id="user"></a>
+					<div class="dropdown" style="float:right;">
+					  <div class="dropdown-content">
+						<a href="#">Link 1</a>
+						<a href="#">Link 2</a>
+						<a href="#">Link 3</a>
+					  </div>
+					</div>
+				</li>
+				<li onclick="teszt();">teszt</li>
+				<li>Menü3</li>
+			</ul>
+		</nav>
+	</body>
+</html>
