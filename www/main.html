@@ -1,16 +1,17 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-        <link type="text/css" rel="stylesheet" href="/haz/style/style.css">
+        <link type="text/css" rel="stylesheet" href="./style/style.css">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-		<script src="/haz/lib/chart.min.js"></script>
+		<script src="./lib/chart.min.js"></script>
 		
-		<script src="/haz/common.js"></script>
+        <script src="./common.js"></script>
+        <script src="./js/graph.custom.js"></script>
 		
 		<script>
 			window.onload = function() {
-				var username = "";
-				
+                var username = "";
+                
 				getusername(function(success, name) {
 					if(success) {
 						username = name;
@@ -18,11 +19,22 @@
 					}
 					else alert("Internal Server Error 500");
 				} );
+
+
+                $(".dropdown").click(function() {
+                    $(this).children(".dropdown-content").fadeToggle("fast");
+                    $(this).children(".dropbtn").toggleClass("active");
+                });
+
+                //js/graph.custom.js
+                generateCardGraphs();
 			}
 			
 			getsensorlist(function(success, name) {
 				console.log(name);
 			})
+            
+
 		</script>
 		
     </head>
@@ -32,23 +44,49 @@
             <div class="navbar clear">
                 <div class="menu">
                     <ul>
-                        <li><a href="#">menu 1</a></li>
+                        <!-- <li><a href="#">menu 1</a></li> -->
                         <li><a href="#"><i class="fas fa-bell"></i></a></li>
                         <li>
-                            <div class="dropdown right" style="">
+                            <div class="dropdown right">
                                 <a href="#" class="dropbtn"><i class="fas fa-user"></i></a>
                                 <div class="dropdown-content">
-                                    <p id="username"></p>
+                                    <p id="username">{Felhasználó}</p>
                                     <a href="#"><i class="fas fa-cog"></i> Beállítások</a>
                                     <a href="#"><i class="fas fa-sign-out-alt"></i> Kijelentkezés</a>
                                 </div>
                             </div>
                         </li>
-                    </ul>
+                    </ul> 
                 </div>
             </div>
         </nav>
-		
+        
+        <div class="card-container">
+            <div class="card blue">
+                <h2>30 °C</h2>
+                <p>Jelenlegi hőmérséklet.</p>
+
+            </div>
+
+            <div class="card blue">
+                <h2>30 °C</h2>
+                <p>Jelenlegi hőmérséklet.</p>
+                <canvas id="canvas" width="200px" height="80px"></canvas>
+            </div>
+            
+            <div class="card blue">
+                <h2>30 °C</h2>
+                <p>Jelenlegi hőmérséklet.</p>
+            </div>
+            
+            <div class="card blue">
+                <h2>30 °C</h2>
+                <p>Jelenlegi hőmérséklet.</p>
+                
+            </div>
+        </div>
+        
+
 		<div class="box" style="width: 40vw;">
 			<canvas id="myChart" width="250" height="200"></canvas>
 			<script>

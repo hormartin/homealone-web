@@ -2,6 +2,11 @@
     --main-bg-color: #e4e5e6;
     --main-text-color: #808080;
     --nav-bg-color: #ffffff;
+
+    --blue-color: #20a8d8;
+    --light-blue-color: #63c2de;
+    --yellow-color: #ffc107;
+    --red-color: #f86c6b;
 }
 
 * {margin: 0; padding: 0; border: 0;}
@@ -22,7 +27,8 @@ body {
 
 nav {
 	width: 100%;
-	background: var(--nav-bg-color)
+    background: var(--nav-bg-color);
+    border-bottom: 1px solid #909090;
 }
 nav .navbar {
 	width: 90%;
@@ -30,15 +36,12 @@ nav .navbar {
 	margin:0 auto
 }
 
-
 nav .menu ul { float: right }
 
 nav .menu li {
 	float: left;
     list-style: none;
 }
-
-nav .menu li:first-child {  }
 
 nav .menu li>a,
 nav .menu li .dropbtn {
@@ -52,7 +55,7 @@ nav .menu li .dropbtn {
     display: inline-block;
 }
 
-nav .menu li a:hover {
+nav .menu ul li:hover {
     background-color: #d6d6d6;
 }
 
@@ -90,10 +93,46 @@ nav .menu li a:hover {
     text-align: center;
 }
 
-.dropdown-content a:hover {background-color: #f1f1f1;}
+.dropbtn.active { background-color: #d6d6d6; }
 
+/*
+.dropdown:hover {background-color: #d6d6d6;}
 .dropdown:hover .dropdown-content {
     display: block;
-}
+}*/
 
 .dropdown.right { float: right; }
+
+.card {
+    
+    border: 1px solid #fff;
+    border-radius: 3px;
+    color: white;
+    display: table-cell;
+    margin: 100px;
+    width: 25%;
+}
+
+.card h2 {
+    margin: 20px 10px 0px;
+    font-weight: 600;
+}
+
+.card p {
+    margin: 0px 10px;
+}
+
+.card.blue {
+    background-color: var(--blue-color);
+    border-color: #198eb7;
+
+}
+
+.card-container {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 50px;
+    display: table;
+
+    border-spacing: 30px 0px;
+}
