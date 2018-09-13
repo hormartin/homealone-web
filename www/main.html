@@ -1,47 +1,128 @@
-<!DOCTYPE html>
 <html>
-	<head>
-		<title>Homealone</title>
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-
-		<link href="/haz/css/style.css" rel="stylesheet" type="text/css">
+    <head>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link type="text/css" rel="stylesheet" href="/haz/style/style.css">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script src="/haz/lib/chart.min.js"></script>
+		
 		<script src="/haz/common.js"></script>
+		
 		<script>
-			function teszt() {
-				getvalueat("CO", "2018-08-14 06:35:39", function(success, value) { alert("s: "+ success + ", value: " + value); });
-			}
-			                                      
-			function load() {
+			window.onload = function() {
 				var username = "";
 				
 				getusername(function(success, name) {
 					if(success) {
 						username = name;
-						document.getElementById("user").innerHTML = '<i class="fas fa-user"></i> ' + username;
+						document.getElementById("username").innerHTML = username;
 					}
 					else alert("Internal Server Error 500");
 				} );
-				
 			}
 			
+			getsensorlist(function(success, name) {
+				console.log(name);
+			})
 		</script>
-	</head>
-	<body onload="load();">
-		<nav>
-			<ul>
-				<li class="dropdown-wrap">
-					<a class="dropbtn" id="user"></a>
-					<div class="dropdown" style="float:right;">
-					  <div class="dropdown-content">
-						<a href="#">Link 1</a>
-						<a href="#">Link 2</a>
-						<a href="#">Link 3</a>
-					  </div>
-					</div>
-				</li>
-				<li onclick="teszt();">teszt</li>
-				<li>Menü3</li>
-			</ul>
-		</nav>
-	</body>
+		
+    </head>
+    <body>
+
+        <nav>
+            <div class="navbar clear">
+                <div class="menu">
+                    <ul>
+                        <li><a href="#">menu 1</a></li>
+                        <li><a href="#"><i class="fas fa-bell"></i></a></li>
+                        <li>
+                            <div class="dropdown right" style="">
+                                <a href="#" class="dropbtn"><i class="fas fa-user"></i></a>
+                                <div class="dropdown-content">
+                                    <p id="username"></p>
+                                    <a href="#"><i class="fas fa-cog"></i> Beállítások</a>
+                                    <a href="#"><i class="fas fa-sign-out-alt"></i> Kijelentkezés</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+		
+		<div class="box" style="width: 40vw;">
+			<canvas id="myChart" width="250" height="200"></canvas>
+			<script>
+				var ctx = document.getElementById("myChart").getContext('2d');
+				var myChart = new Chart(ctx, {
+					type: 'line',
+					data: {
+						labels: ["2018-01-01 01:01:01"],
+						datasets: [{
+							label: 'Hőmérő (°C)',
+							data: [12, 19, 3, 5, 2, 3],
+							backgroundColor: [
+								'rgba(230, 10, 10, 0.2)',
+							],
+							borderColor: [
+								'rgba(255,0,0,1)'
+							],
+							borderWidth: 1
+						}]
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero:true
+								}
+							}]
+						}
+					}
+				});
+				</script>
+				
+				<p id="teszt"><p>
+				
+				<script>
+					getvalue("C8", function(s, value){
+						document.getElementById("teszt").innerHTML = "Fok: "+value;
+					});
+				</script>
+				
+		</div>
+    <!--
+        
+        <div style="">
+        <nav>
+            <ul>
+                <li><a href="#">
+                        <div class="dropdown" style="float:right;">
+                                <p class="dropbtn">Menü</p>
+                                <div class="dropdown-content">
+                                    <a href="#">Link 1</a>
+                                    <a href="#">Link 2</a>
+                                    <a href="#">Link 3</a>
+                                </div>
+                            </div>
+                </a></li>
+                <li><a href="#">Menü 2</a></li>
+
+            </ul>
+        </nav>
+    </div>
+    -->
+
+        <!--
+        <div class="dropdown" style="float:right;">
+            <a href="#" class="dropbtn">Right</a>
+            <div class="dropdown-content">
+              <a href="#">Link 1</a>
+              <a href="#">Link 2</a>
+              <a href="#">Link 3</a>
+            </div>
+          </div>
+        -->
+          
+          
+    </body>
 </html>

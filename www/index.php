@@ -42,6 +42,14 @@ if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"
 		$sensor = $q->fetch_assoc() or die("hiba<br>");
 		print $sensor["VALUE"];
 
+	} else if($_POST["action"] == "getsensorlist") {
+		$q = mysqli_query($db, "select distinct FIELD from comm") or die("sql hiba");
+		$sensorlist = array();
+		while($sensor = $q->fetch_assoc()) {
+			array_push($sensorlist, $sensor["FIELD"]);
+		}
+		print(json_encode($sensorlist));
+
 	} else if($_POST["action"] == "getconfig" and isset($_POST["device"]) and isset($_POST["name"])) {
 		ctype_alnum(str_replace("!", "", $_POST["device"])) or die("rossz adat<br>");
 		ctype_alnum(str_replace(".", "", $_POST["name"])) or die("rossz adat<br>");

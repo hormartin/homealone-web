@@ -38,6 +38,14 @@ function getusername(callback) {
 	});
 }
 
+function getsensorlist(callback) {
+	request('action=getsensorlist', function() {
+		if(this.readyState == 4 && this.status == 200) {
+			callback(true, JSON.parse(this.responseText));
+		}
+	});
+}
+
 function getconfig(device, name, callback) {
 	request('action=getconfig&device=' + device + '&name=' + name, function() {
 		if(this.readyState == 4 && this.status == 200) {
