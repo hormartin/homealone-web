@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <title>Homealone - Beállítások</title>
+        
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link type="text/css" rel="stylesheet" href="./style/style.css">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script src="./lib/chart.min.js"></script>
+		
+        <script src="./common.js"></script>
+        <script src="./js/graph.custom.js"></script>
+
+        <script src="./js/script.js"></script>
+		
+		<script>
+			window.onload = function() {
+                var username = "";
+                
+				getusername(function(success, name) {
+					if(success) {
+						username = name;
+						document.getElementById("username").innerHTML = username;
+					}
+					else alert("Internal Server Error 500");
+				} );
+
+
+                $(".dropdown").click(function() {
+                    $(this).children(".dropdown-content").fadeToggle("fast");
+                    $(this).children(".dropbtn").toggleClass("active");
+                });
+
+                //js/graph.custom.js
+                generateCardGraphs();
+			}
+			
+			getsensorlist(function(success, name) {
+				console.log(name);
+			})
+            
+
+		</script>
+		
+    </head>
+    <body>
+
+        <nav>
+            <div class="navbar clear">
+                <div class="menu">
+                    <ul>
+                        <!-- <li><a href="#">menu 1</a></li> -->
+                        <li><a href="#"><i class="fas fa-bell"></i></a></li>
+                        <li>
+                            <div class="dropdown right">
+                                <a href="#" class="dropbtn"><i class="fas fa-user"></i></a>
+                                <div class="dropdown-content">
+                                    <p id="username">{Felhasználó}</p>
+                                    <a href="#"><i class="fas fa-cog"></i> Beállítások</a>
+                                    <a href="#"><i class="fas fa-sign-out-alt"></i> Kijelentkezés</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul> 
+                </div>
+            </div>
+        </nav>
+
+        <div id="settings">
+            <div id="settings-menu">
+                <ul>
+                    <li class="title"><p>Beállítások</p></li>
+                    <li><a href="#">Profil</a></li>
+                    <li><a href="#">Felhasználók</a></li>
+                    <li><a href="#">Érzékelők</a></li>
+                </ul>
+                
+            </div>
+
+            <div id="settings-main">
+                <div id="sensor-config">
+                    <h3>Érzékelők</h3>
+
+                    <div class="spoiler">
+                        <p>Füst érzékelő</p>
+                        <div class="content">
+
+                            <input type="textbox" value="teszt"/>
+
+                        </div>
+                    </div>
+
+                    <div class="spoiler">
+                        <p>Riasztó</p>
+                        <div class="content">asdasdasdsadasd</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+          
+    </body>
+</html>

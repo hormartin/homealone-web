@@ -3,7 +3,7 @@
 var lindedConfig = {
     type: 'line',
     data: {
-        labels: [],
+        labels: ["1", "2", "3", "4"],
         datasets: [{
             label: '',
             backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -21,6 +21,7 @@ var lindedConfig = {
     },
     options: {
         responsive: true,
+        responsiveAnimationDuration: 0,
         title: {
             display: false
         },
@@ -56,6 +57,9 @@ var lindedConfig = {
 
 function generateCardGraphs() {
     //card1
-    var ctx = document.getElementById('canvas').getContext('2d');
-    window.myLine = new Chart(ctx, lindedConfig);
+    var graphs = document.getElementsByClassName('canvas');
+    for(var i = 0; i < graphs.length; i++) {
+        var ctx = graphs[i].getContext('2d');
+        new Chart(ctx, lindedConfig);
+    }
 }

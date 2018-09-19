@@ -85,6 +85,10 @@ nav .menu ul li:hover {
     z-index: 10000;
 }
 
+.dropdown-content a:hover {
+    background-color: #eaebef
+}
+
 .dropdown-content p {
     border-bottom: 1px solid #c8ced3;
     background: #e4e7ea;
@@ -110,7 +114,7 @@ nav .menu ul li:hover {
     color: white;
     display: table-cell;
     margin: 100px;
-    width: 25%;
+    width: 25vw;
 }
 
 .card h2 {
@@ -135,4 +139,104 @@ nav .menu ul li:hover {
     display: table;
 
     border-spacing: 30px 0px;
+}
+.chart-container {
+    width: calc(25vw - 40px);
+}
+
+.chart-container canvas {
+    width: 100%;
+    transition: 0;
+}  
+
+#settings {
+    width: 90%;
+    margin: 70px auto;
+}
+
+#settings #settings-menu {
+    display: inline-block;
+    float: left;
+    width: 15%;
+    background: var(--nav-bg-color);
+    margin-right: 10px;
+
+    border-radius: 5px;
+    border: 1px solid #c8ced3;
+
+}
+
+#settings #settings-menu ul {
+    list-style: none;
+}
+
+#settings #settings-menu ul li {
+    padding: 10px 5px;
+    border-bottom: 1px solid #c8ced3;
+    cursor: pointer;
+    transition: background-color .2s;
+}
+
+#settings #settings-menu ul li a {
+    text-decoration: none;
+    color: #0366d6;
+}
+
+#settings #settings-menu ul li:hover {
+    background: #eaebef;
+}
+
+#settings #settings-menu ul li.title { background: #e4e7ea; cursor: default; }
+
+#settings #settings-menu ul li.title p { font-weight: bold; }
+
+#settings #settings-main {
+    display: inline-block;
+    float: right;
+    width: 80%;
+    height: 50vh;
+    background: var(--nav-bg-color);
+
+    margin-left: 10px;
+}
+
+#settings h3 {
+    margin: 20px 40px;
+    color: black;
+    font-weight: 300;
+    font-size: 20px;
+
+    padding-bottom: 15px;
+    border-bottom: .5px solid #c8ced3;
+
+}
+
+#settings #sensor-config {
+
+}
+
+.spoiler {
+    width: 90%;
+    margin: 10px auto;
+    border-radius: 3px;
+    border: 1px solid #c8ced3;
+}
+.spoiler p {
+    padding: 7px 5px;
+    cursor: pointer;
+    background: #efefef;
+}
+
+.spoiler p::after {
+    content: " ⯅";
+}
+
+.spoiler p.active::after {
+    content: " ⯆";
+}
+
+.spoiler .content {
+    display: none;
+    width: 100%;
+    margin: 10px;
 }
