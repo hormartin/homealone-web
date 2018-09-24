@@ -6,6 +6,7 @@ if(!isset($_SESSION["authenticated"])) {
 }
 
 $db = mysqli_connect("localhost", "root", "123456", "homealone") or die('Nem sikerült kapcsolódni.<br>');
+$db->set_charset('utf8');
 
 if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"])) {
 	ctype_alnum($_POST["user"]) or die("nem jó username<br>");
@@ -65,7 +66,26 @@ if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"
 
 		print "Ez még nincs kész";
 
+	}else if($_POST["action"] == "getsensorlistname") {
+		$q = mysqli_query($db, "select * from config WHERE FIELD = 'display';") or die("sql hiba");
+		$sensorlist = array();
+		while($sensor = $q->fetch_assoc()) {
+			array_push($sensorlist, array($sensor["SECTION"], $sensor["VALUE"]));
+		}
+		//die(print_r($sensorlist));
+		print(json_encode($sensorlist));
+	}else if($_POST["action"] == "getallconfig" and isset($_POST["device"])) {
+
+		$q = mysqli_query($db, "select * from config WHERE SECTION = '". $_POST['device'] ."'") or die("sql hiba");
+		$configlist = array();
+		while($config = $q->fetch_assoc()) {
+			array_push($configlist, array($config["FIELD"], $config["VALUE"]));
+		}
+
+		//die(print_r($configlist));
+		print(str_replace("","", json_encode($configlist)));
 	}
+
 } else if($_SESSION["authenticated"]) {
 	print file_get_contents("main.html");
 } else {
