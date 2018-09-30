@@ -1,7 +1,11 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Homealone - Beállítások</title>
         
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" href="../style/style.css">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -42,7 +46,7 @@
 
                     for(var i = 0; i < list.length; i++) {
 
-                        div.innerHTML += '<div class="spoiler" sensor="'+ list[i][0] +'"> <p>'+ list[i][1] +'</p> <div class="content"></div> </div>';
+                        div.innerHTML += '<div class="spoiler" sensor="'+ list[i][0] +'"> <p>'+ list[i][1] +' ('+ list[i][0] +')</p> <div class="content"></div> </div>';
 
                     }
                         
@@ -56,12 +60,15 @@
                             div = div.getElementsByClassName("content")[0];
                             
                             var container = true
+
+                            content += "<form method='POST' action='/settings/index.php' style='text-align: center; margin-right: 20px;'>";
+
                             for(var c = 0; c < configs.length; c++) {
                                 
                                 //if(container) {
                                     //if(c != configs.length - 1) {
                                         content += "<div class='input-break'>";
-                                        container = false;
+                                        //container = false;
                                     //}else{
                                     //    content += "<br>";
                                     //}
@@ -72,24 +79,39 @@
 
                                 //if((c + 1) % 2 == 0 && container == false) {
                                     content += "</div>";
-                                    container = true;
+                                    //container = true;
                                 //}
                     
                             }
+                            
+                            content += "<div>";
+                            content += "<button>Mentés</button>";
+                            content += "</div>";
+
+                            content += "</form>";
                     
                             div.innerHTML = content;
+
+                           
+                           $($(div).children("form")).submit(function(e){
+                                e.preventDefault();
+                                alert("asd");
+
+                                
+                            });
+
                     
                         });
                     
                     }
 
                     spoilerHandler();
-                });
 
+                });
 
                 
 			}
-		</script>
+        </script>
 		
     </head>
     <body>
@@ -106,7 +128,7 @@
                                 <div class="dropdown-content">
                                     <p id="username">{Felhasználó}</p>
                                     <a href="#"><i class="fas fa-cog"></i> Beállítások</a>
-                                    <a href="#"><i class="fas fa-sign-out-alt"></i> Kijelentkezés</a>
+                                    <a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Kijelentkezés</a>
                                 </div>
                             </div>
                         </li>

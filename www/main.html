@@ -1,7 +1,11 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Homealone</title>
         
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" href="./style/style.css">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -9,6 +13,7 @@
 		
         <script src="common.js"></script>
         <script src="./js/graph.custom.js"></script>
+        <script src="./js/script.js"></script>
 		
 		<script>
 			window.onload = function() {
@@ -54,7 +59,7 @@
                                 <div class="dropdown-content">
                                     <p id="username">{Felhasználó}</p>
                                     <a href="/settings"><i class="fas fa-cog"></i> Beállítások</a>
-                                    <a href="#"><i class="fas fa-sign-out-alt"></i> Kijelentkezés</a>
+                                    <a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Kijelentkezés</a>
                                 </div>
                             </div>
                         </li>

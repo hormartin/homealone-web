@@ -4,6 +4,7 @@
     --nav-bg-color: #ffffff;
 
     --blue-color: #20a8d8;
+    --dark-blue-color: #188fba;
     --light-blue-color: #63c2de;
     --yellow-color: #ffc107;
     --red-color: #f86c6b;
@@ -15,7 +16,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
-    font-size: .875rem;
+    font-size: 13px;
 }
 
 .clear:before,
@@ -41,6 +42,7 @@ nav .menu ul { float: right }
 nav .menu li {
 	float: left;
     list-style: none;
+    cursor: pointer;
 }
 
 nav .menu li>a,
@@ -253,4 +255,50 @@ input[type=textbox] {
 div.input-break {
     display: inline-block;
     padding: 5px 5px;
+}
+
+button {
+    padding: 10px 15px;
+    transition: background-color .3s;
+    background-color: var(--blue-color);
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: var(--dark-blue-color);
+}
+
+
+@media (max-width: 750px) {
+    #settings {
+        width: 95%;
+        margin-top: 20px;
+    }
+
+    #settings #settings-menu {
+      display: block;
+      width: 100%;
+      margin: 10px;
+      float: left;
+      margin: 0;
+
+      margin-bottom: 10px;
+    }
+
+    #settings #settings-main {
+        display: block;
+        float: left;
+        width: 100%;
+        margin: 0;
+
+    }
+
+    /*#settings .spoiler .content,
+    #settings .spoiler .content input,
+    #settings .spoiler .content button {
+        font-size: 13px;
+    }*/
 }

@@ -63,8 +63,19 @@ if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"
 		ctype_alnum(str_replace("!", "", $_POST["device"])) or die("rossz adat<br>");
 		ctype_alnum(str_replace(".", "", $_POST["name"])) or die("rossz adat<br>");
 		ctype_alnum($_POST["value"]) or die("rossz adat<br>");
+		$q = mysqli_query($db, "select ID_CONFIG from config where SECTION ='".$_POST['device']."' AND FIELD = '".$_POST['name']."'");
+		$configvalid = 0;
+		while($config = $q->fetch_assoc()){
+			$configvalid++;
+		}
 
-		print "Ez még nincs kész";
+		if($configvalid > 0){
+			$q = mysqli_query($db, "UPDATE config SET VALUE = '".$_POST['value']."' WHERE SECTION = '".$_POST['device']."'");
+			
+			print("UPDATE config SET VALUE = '".$_POST['value']."' WHERE SECTION = '".$_POST['device']."'");
+		}else print("error");
+
+		//print "Ez még nincs kész";
 
 	}else if($_POST["action"] == "getsensorlistname") {
 		$q = mysqli_query($db, "select * from config WHERE FIELD = 'display';") or die("sql hiba");
