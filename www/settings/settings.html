@@ -61,7 +61,7 @@
                             
                             var container = true
 
-                            content += "<form method='POST' action='/settings/index.php' style='text-align: center; margin-right: 20px;'>";
+                            content += "<form method='POST' sensor='"+device+"' action='/settings/index.php' style='text-align: center; margin-right: 20px;'>";
 
                             for(var c = 0; c < configs.length; c++) {
                                 
@@ -73,14 +73,22 @@
                                     //    content += "<br>";
                                     //}
                                 //}
+                                var type = "textbox";
+                                var properties = "";
 
-                                content += '<span>'+ configs[c][0] +'</span><br> <input type="textbox" name="'+ configs[c][0] +'" placeholder="'+ configs[c][1] +'" value=""/> <br>'
+                                if(configs[c][2] == "0"){
+                                    type = "number";
+                                    properties = 'min="'+configs[c][3]+'" max="'+configs[c][4]+'" class="number"';
+                                }
+
+                                content += '<span>'+ configs[c][0] +'</span><br><span class="errormsg"></span><input type="textbox" '+properties+' name="'+ configs[c][0] +'" placeholder="'+ configs[c][1] +'" value=""/> <br>'
                                 
 
                                 //if((c + 1) % 2 == 0 && container == false) {
                                     content += "</div>";
                                     //container = true;
                                 //}
+                                
                     
                             }
                             
@@ -94,23 +102,54 @@
 
                            
                            $($(div).children("form")).submit(function(e){
-                                e.preventDefault();
-                                alert("asd");
+                               e.preventDefault();
+                               submitConfigForm(this);
 
-                                
+                            });
+                            
+                            $($(div).children("form").children("div").children("input.number")).bind('input', function() { 
+                                    var min = $(this).attr("min");
+                                    var max = $(this).attr("max");
+
+                                    //alert("asdasdasdasasd");
+                                    
+                                    var errorElm = $(this).parent("div").children(".errormsg");
+                                    
+                                    if(isNaN($(this).val())) {
+                                        errorElm.html("Számnak kell lennie.<br/>");
+                                        errorElm.fadeIn(200);
+                                        return;
+                                    }
+
+                                    if($(this).val() * 1 < min) {
+
+                                        errorElm.html("Nem lehet kisebb, mint "+min+"<br/>");
+                                        errorElm.fadeIn(200);
+                                        return;
+                                        //alert("he")
+                                    }
+                                        
+                                    if($(this).val() * 1 > max) {
+                                        errorElm.html("Nem lehet nagyobb, mint "+max+"<br/>");
+                                        errorElm.fadeIn(200);
+                                        return;
+                                    }
+
+                                    errorElm.fadeOut(200);
+                                    //errorElm.html("");
                             });
 
                     
                         });
-                    
+
+                        
                     }
 
                     spoilerHandler();
 
                 });
-
                 
-			}
+            }
         </script>
 		
     </head>

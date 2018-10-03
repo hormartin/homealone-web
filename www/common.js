@@ -75,3 +75,12 @@ function getallconfig(device, callback) {
 		}
 	});
 }
+
+function setconfig(device, name, value, callback) {
+	request('action=setconfig&device='+encodeURIComponent(device)+'&name='+encodeURIComponent(name)+'&value='+encodeURIComponent(value),
+		function() {
+			if(this.readyState == 4 && this.status == 200) {
+				callback(true, this.responseText, device, name, value);
+			}
+		});
+}

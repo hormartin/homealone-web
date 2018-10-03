@@ -241,10 +241,11 @@ nav .menu ul li:hover {
 .spoiler .content {
     display: none;
     width: 100%;
-    margin: 10px;
+    margin: 8px;
 }
 
-input[type=textbox] {
+input[type=textbox],
+input[type=number] {
     border-radius: 2px;
     border: 2px solid #c8ced3;
     padding: 5px 0px 5px 2px;
@@ -271,6 +272,10 @@ button:hover {
     background-color: var(--dark-blue-color);
 }
 
+span.errormsg {
+    color: var(--red-color);
+    display: none;
+}
 
 @media (max-width: 750px) {
     #settings {
@@ -294,6 +299,16 @@ button:hover {
         width: 100%;
         margin: 0;
 
+    }
+
+    div.input-break {
+        width: 100%;
+        padding: 0px 0px;
+    }
+
+    input[type=textbox],
+    input[type=number] {
+        width: 100%;
     }
 
     /*#settings .spoiler .content,

@@ -1,5 +1,9 @@
 <?php
 
+//ALTER TABLE `config` ADD `MIN_VALUE` INT(255) NOT NULL AFTER `COMMENT`;
+//ALTER TABLE `config` ADD `MAX_VALUE` INT(255) NOT NULL AFTER `MIN_VALUE`;
+//ALTER TABLE `config` ADD `VALUE_TYPE` INT(1) NOT NULL DEFAULT '1' AFTER `MAX_VALUE`;
+
 session_start() or die("Munkamenet létrehozási hiba<br>");
 if(!isset($_SESSION["authenticated"])) {
 	$_SESSION["authenticated"] = false;
@@ -61,8 +65,9 @@ if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"
 
 	} else if($_POST["action"] == "setconfig" and isset($_POST["device"]) and isset($_POST["name"]) and isset($_POST["value"])) {
 		ctype_alnum(str_replace("!", "", $_POST["device"])) or die("rossz adat<br>");
-		ctype_alnum(str_replace(".", "", $_POST["name"])) or die("rossz adat<br>");
-		ctype_alnum($_POST["value"]) or die("rossz adat<br>");
+		//ctype_alnum(str_replace(".", "", $_POST["name"])) or die("rossz adat<br>");
+		//ctype_alnum($_POST["value"]) or die("rossz adat<br>");
+
 		$q = mysqli_query($db, "select ID_CONFIG from config where SECTION ='".$_POST['device']."' AND FIELD = '".$_POST['name']."'");
 		$configvalid = 0;
 		while($config = $q->fetch_assoc()){
@@ -70,9 +75,9 @@ if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"
 		}
 
 		if($configvalid > 0){
-			$q = mysqli_query($db, "UPDATE config SET VALUE = '".$_POST['value']."' WHERE SECTION = '".$_POST['device']."'");
+			$q = mysqli_query($db, "UPDATE config SET VALUE = '".$_POST['value']."' WHERE SECTION = '".$_POST['device']."' AND FIELD = '". $_POST['name'] ."'");
 			
-			print("UPDATE config SET VALUE = '".$_POST['value']."' WHERE SECTION = '".$_POST['device']."'");
+			print("success");
 		}else print("error");
 
 		//print "Ez még nincs kész";
@@ -90,7 +95,7 @@ if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"
 		$q = mysqli_query($db, "select * from config WHERE SECTION = '". $_POST['device'] ."'") or die("sql hiba");
 		$configlist = array();
 		while($config = $q->fetch_assoc()) {
-			array_push($configlist, array($config["FIELD"], $config["VALUE"]));
+			array_push($configlist, array($config["FIELD"], $config["VALUE"], $config["VALUE_TYPE"], $config["MIN_VALUE"], $config["MAX_VALUE"]));
 		}
 
 		//die(print_r($configlist));
@@ -102,5 +107,6 @@ if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"
 } else {
 	print file_get_contents("login.html");
 }
+
 
 ?>
