@@ -12,6 +12,15 @@ if(!isset($_SESSION["authenticated"])) {
 $db = mysqli_connect("localhost", "root", "123456", "homealone") or die('Nem sikerült kapcsolódni.<br>');
 $db->set_charset('utf8');
 
+function containsSpecialChar(string $text) {
+	// /[^a-zA-Z0-9\s.,őúöüóéáűíŐÚÖÜÓÉÁŰÍ]/
+	$hu = array('/é/','/É/','/á/','/Á/','/ó/','/Ó/','/ö/','/Ö/','/ő/','/Ő/','/ú/','/Ú/','/ű/','/Ű/','/ü/','/Ü/','/í/','/Í/');
+	$en = array('e','E','a','A','o','O','o','O','o','O','u','U','u','U','u','U','i','I');
+	$text = preg_replace($hu, $en, $text);
+	
+	return preg_replace("/[^a-zA-Z0-9\s.,-]/u", "", $text) !== $text;
+}
+
 if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"])) {
 	ctype_alnum($_POST["user"]) or die("nem jó username<br>");
 	$q = mysqli_query($db, "SELECT PASSWORD FROM users WHERE USER = '" . $_POST["user"] . "'") or die("sql hiba");
@@ -64,18 +73,51 @@ if(!$_SESSION["authenticated"] and isset($_POST["pass"]) and isset($_POST["user"
 		print $cfg["VALUE"];
 
 	} else if($_POST["action"] == "setconfig" and isset($_POST["device"]) and isset($_POST["name"]) and isset($_POST["value"])) {
-		ctype_alnum(str_replace("!", "", $_POST["device"])) or die("rossz adat<br>");
+		//ctype_alnum(str_replace("!", "", $_POST["device"])) or die("rossz adat");
 		//ctype_alnum(str_replace(".", "", $_POST["name"])) or die("rossz adat<br>");
 		//ctype_alnum($_POST["value"]) or die("rossz adat<br>");
 
-		$q = mysqli_query($db, "select ID_CONFIG from config where SECTION ='".$_POST['device']."' AND FIELD = '".$_POST['name']."'");
+		/*if (preg_replace("/[^a-zA-Z0-9\s.,]/", "", $_POST["device"]) !== $_POST["device"]) 	die("wrong-data");
+		if (preg_replace("/[^a-zA-Z0-9\s.,]/", "", $_POST["name"]) !== $_POST["name"]) 		die("wrong-data");
+		if (preg_replace("/[^a-zA-Z0-9\s.,]/", "", $_POST["value"]) !== $_POST["value"]) 		die("wrong-data");*/
+
+		if(containsSpecialChar($_POST["device"])) die("wrong-data");
+		if(containsSpecialChar($_POST["name"])) die("wrong-data");
+		if(containsSpecialChar($_POST["value"])) die("wrong-data");
+
+		$q = mysqli_query($db, "select * from config where SECTION ='".$_POST['device']."' AND FIELD = '".$_POST['name']."'");
 		$configvalid = 0;
+
+		$type = 1;
+		$min = 0;
+		$max = 0;
+
 		while($config = $q->fetch_assoc()){
 			$configvalid++;
+			$type = $config["VALUE_TYPE"];
+			$min = $config["MIN_VALUE"];
+			$max = $config["MAX_VALUE"];
 		}
 
+		$value = $_POST["value"];
 		if($configvalid > 0){
-			$q = mysqli_query($db, "UPDATE config SET VALUE = '".$_POST['value']."' WHERE SECTION = '".$_POST['device']."' AND FIELD = '". $_POST['name'] ."'");
+
+			if($type == 0) {
+				if(is_numeric($_POST["value"]) == false) die("non-numeric");
+				//if($_POST["value"] % 1 != 0) die("non-whole-num");
+
+				$old = doubleval($_POST["value"]);
+				$val = floor($_POST["value"]);
+
+				if($val !== $old) die("non-whole-num");
+
+				if($_POST["value"] > $max) die("max-value");
+				if($_POST["value"] < $min) die("min-value");
+				$value = (int)$_POST["value"];
+			}
+
+
+			$q = mysqli_query($db, "UPDATE config SET VALUE = '".$value."' WHERE SECTION = '".$_POST['device']."' AND FIELD = '". $_POST['name'] ."'");
 			
 			print("success");
 		}else print("error");

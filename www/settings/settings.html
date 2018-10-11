@@ -9,7 +9,10 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" href="../style/style.css">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-		<script src="../lib/chart.min.js"></script>
+        <script src="../lib/chart.min.js"></script>
+        
+        <script src="../lib/toastr/toastr.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="../lib/toastr/toastr.min.css">
 		
         <script src="../common.js"></script>
         <script src="../js/graph.custom.js"></script>
@@ -29,14 +32,8 @@
 					else alert("Internal Server Error 500");
 				} );
 
-
-                $(".dropdown").click(function() {
-                    $(this).children(".dropdown-content").fadeToggle("fast");
-                    $(this).children(".dropbtn").toggleClass("active");
-                });
-
                 //js/graph.custom.js
-                generateCardGraphs();
+                //generateCardGraphs();
                 
                 //Generate sensor list.
                 var sList;
@@ -131,6 +128,12 @@
                                         
                                     if($(this).val() * 1 > max) {
                                         errorElm.html("Nem lehet nagyobb, mint "+max+"<br/>");
+                                        errorElm.fadeIn(200);
+                                        return;
+                                    }
+
+                                    if(($(this).val() * 1) % 1 != 0) {
+                                        errorElm.html("Egész számnak kell lennie.<br/>");
                                         errorElm.fadeIn(200);
                                         return;
                                     }

@@ -1,8 +1,43 @@
+toastr.options = {
+    "closeButton": true,
+    "debug": true,
+    "newestOnTop": true,
+    "progressBar": false,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "2000",
+    "hideDuration": "1000",
+    "timeOut": "2000",
+    "extendedTimeOut": "0",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  }
+
 $( document ).ready(function() {
     spoilerHandler();
 
     $("#logout").click(function() {
         logout();
+    });
+
+    $(document).click(function(event) {
+        var target = $(event.target);
+
+        var isBtn = false;
+        if(target.hasClass("dropdown") || target.hasClass("dropbtn") || target.hasClass("fa-use")) isBtn = true;
+        
+        if(isBtn == false) {
+            $(".dropdown").children(".dropdown-content").fadeOut("fast");
+            $(".dropdown").children(".dropbtn").removeClass("active");
+        }
+    });
+    
+    $(".dropdown").click(function() {
+        $(this).children(".dropdown-content").fadeToggle("fast");
+        $(this).children(".dropbtn").toggleClass("active");
     });
 });
 
@@ -42,21 +77,16 @@ function submitConfigForm(formelm) {
             var min = $(input).attr("min");
             var max = $(input).attr("max");
 
-            if(isNaN(value)) {
-                return false;
-            }
+            if(isNaN(value)) return false;
+            value = value * 1;
 
-            if(value * 1 < min) {
-                return false;
-            }
-                
-            if(value * 1 > max) {
-                return false;
-            }
-
+            if(value < min) return false;
+            if(value > max) return false;
+            if(value % 1 != 0) return false;
         }
     }
 
+    var writtenOut = false;
 
     for(var i = 0; i < inputs.length; i++) {
         input = inputs[i];
@@ -65,46 +95,46 @@ function submitConfigForm(formelm) {
 
         if(value == "") continue;
 
-        setconfig(formelm.getAttribute("sensor"), name, value, function(s, t, d, n, newvalue) {
-            if(s && t == "success") {
+        setconfig(formelm.getAttribute("sensor"), name, value, function(s, text, d, name, newvalue) {
+            //d - device name
+            if(s && text == "success") {
                 var spoiler = getDivElementBySensor(d);
 
                 if(spoiler) {
                     var div = spoiler.getElementsByClassName("content")[0];
 
-                    //console.log($($(div).children("form").children("div").children("input[name="+n+"]")));
-                    var update_input = $($(div).children("form").children("div").children("input[name="+n+"]"));
+                    //Tizedes jegy eltávolítása
+                    if(isNaN(newvalue) == false) newvalue = Math.trunc(newvalue);
+
+                    var update_input = $($(div).children("form").children("div").children("input[name="+name+"]"));
                     $(update_input).attr("placeholder", newvalue);
                     $(update_input).val("");
 
-                    if(n == "display") {
+                    if(name == "display") {
                         spoiler.getElementsByTagName("p")[0].innerHTML = ""+newvalue+" ("+d+")";
                     }
 
-                    console.log("Sikeres frissítés.");
+                    if(!writtenOut) toastr["info"]("Sikeresen frissítetted az adatokat! ("+d+")", "Információ");
+                    writtenOut = true
                 }    
                 else return false;
             }else{
-                alert("Valami hiba történt, az adatok frissítése során. ("+t+")");
+                if(text == "error")
+                    toastr["error"]("Ilyen adatmező nem létezik. ("+name+")", "Hiba!");
+                else if(text == "wrong-data")
+                    toastr["error"]("Adatként nem adható meg speciális karakter. ("+name+")", "Hiba!");
+                else if(text == "non-numeric")
+                    toastr["error"]("Az adatnak számnak kell lennie. ("+name+")", "Hiba!");
+                else if(text == "max-value")
+                    toastr["error"]("Túl nagy számot adtál meg. ("+name+")", "Hiba!");
+                else if(text == "min-value")
+                    toastr["error"]("Túl alacsony számot adtál meg. ("+name+")", "Hiba!");
+                else if(text == "non-whole-num")
+                    toastr["error"]("A számnak egész számnak kell lennie. ("+name+")", "Hiba!");
+                else
+                    toastr["error"]("Ismeretlen hiba történt! ("+text+")", "Hiba!");
             }
         });
 
     }
 }
-
-/*
-var configInts = {
-    //["name"] = []
-    ["enable"]
-    ["write"] =                 [0, 1, 1],
-    ["default_value"] =         [0, 0, 0],
-    ["min"] =                   [-100, 0, 0],
-    ["max"] =                   [-100, 0, 0],
-    ["precision"] =             [1, 0, 0],
-    ["monostab"] =              [1, 0, 0],
-    ["distance"] =              [1, 0, 0],
-    ["alarm.set"] =             [0, 1, 0],
-    ["alarm.minvalue"] =        [1, 0, 0],
-    ["alarm.maxvalue"] =        [1, 0, 0],
-    ["sensibility.percent"] =   [1, 100, 0],
-}*/
