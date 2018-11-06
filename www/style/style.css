@@ -6,6 +6,7 @@
     --blue-color: #20a8d8;
     --dark-blue-color: #188fba;
     --light-blue-color: #63c2de;
+    --green-color: #7BB574;
     --yellow-color: #ffc107;
     --red-color: #f86c6b;
 }
@@ -17,6 +18,7 @@ body {
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
     font-size: 13px;
+    overflow-x: hidden;
 }
 
 .clear:before,
@@ -52,9 +54,12 @@ nav .menu li .dropbtn {
 	position: relative;
 	display: block;
 	padding: 20px 20px;
-    transition: background-color .3s;
+    transition: background-color .2s;
     text-decoration: none;
     display: inline-block;
+}
+nav .menu ul li {
+    transition: background-color .2s;
 }
 
 nav .menu ul li:hover {
@@ -116,7 +121,7 @@ nav .menu ul li:hover {
     color: white;
     display: table-cell;
     margin: 100px;
-    width: 25vw;
+    max-width: calc(100% - 30px);
 }
 
 .card h2 {
@@ -126,24 +131,41 @@ nav .menu ul li:hover {
 
 .card p {
     margin: 0px 10px;
+    margin-bottom: 20px;
 }
 
 .card.blue {
     background-color: var(--blue-color);
     border-color: #198eb7;
+}
 
+.card.green {
+    background-color: var(--green-color);
+    border-color: #5f9658;
+}
+
+.card.yellow {
+    background-color: var(--yellow-color);
+    border-color: #d3a20e;
+}
+
+.card.red {
+    background-color: var(--red-color);
+    border-color: #bc4c4b;
 }
 
 .card-container {
     width: 100%;
     margin: 0 auto;
-    margin-top: 50px;
+    margin-top: 40px;
     display: table;
+    margin-bottom: 30px;
 
-    border-spacing: 30px 0px;
+    border-spacing: 20px 0px;
+    max-width: calc(100% - 30px);
 }
 .chart-container {
-    width: calc(25vw - 40px);
+    width: calc(25vw - 30px);
 }
 
 .chart-container canvas {
@@ -203,7 +225,7 @@ nav .menu ul li:hover {
     margin-bottom: 50px;
 }
 
-#settings h3 {
+h3 {
     margin: 20px 40px;
     color: black;
     font-weight: 300;
@@ -245,7 +267,8 @@ nav .menu ul li:hover {
 }
 
 input[type=textbox],
-input[type=number] {
+input[type=number],
+input[type=password] {
     border-radius: 2px;
     border: 2px solid #c8ced3;
     padding: 5px 0px 5px 2px;
@@ -275,6 +298,123 @@ button:hover {
 span.errormsg {
     color: var(--red-color);
     display: none;
+}
+
+.box {
+    margin-top: 20px;
+    width: calc(100% - 30px);
+    margin: 0 auto;
+    margin-left: 20px;
+    background-color: white;
+}
+
+.box h3 {
+    padding-top: 30px;
+}
+
+.control {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: .5px solid #c8ced3;
+}
+
+.control p { color: black; font-weight: bold; padding-top: 10px;}
+.control input,
+.control select {
+    border: 1px solid #c8ced3;
+    
+}
+
+#graphlabel {
+    text-align: center;
+    color: black;
+}
+
+p.section {
+    color: black;
+    font-size: 17px;
+    padding-bottom: 2px;
+    border-bottom: .5px solid #c8ced3;
+    margin: 60px 10px;
+    margin-bottom: 30px;
+}
+
+#profile-config form p {
+    color: black;
+}
+
+#profile-config form {
+    text-align: center
+}
+
+.user-block {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.user-block span {
+    color: black;
+    display: inline-block;
+    padding: 5px;
+    font-size: 15px;
+}
+
+.user-block select {
+    display: inline-block;
+    float: right;
+    padding: 5px;
+    border: 1px solid lightgray;
+    border-radius: 3px;
+}
+
+.user-block::after {
+    margin-top: 15px;
+    border-bottom: 1px solid lightgray;
+    width: 100%;
+    display: block;
+    content: " ";
+}
+
+#login-container {
+    width: 40%;
+    margin: 0 auto;
+}
+
+#login-panel {
+    width: 100%;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin-top: 70px;
+}
+#login-container p {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#login-panel h4 {
+    font-size: 23px;
+    color: black;
+    padding: 20px 0px 20px 0px;
+    border-bottom: 1px solid lightgray;
+}
+
+#login-panel form {
+    width: 100%;
+    margin-top: 20px;
+}
+
+#login-panel form input {
+    width: 70%;
+}
+
+#login-panel form button {
+    margin: 20px 0px 20px;
 }
 
 @media (max-width: 750px) {
@@ -316,4 +456,46 @@ span.errormsg {
     #settings .spoiler .content button {
         font-size: 13px;
     }*/
+
+    /* Cards */
+
+    .card {
+    
+        border: 1px solid #fff;
+        border-radius: 3px;
+        color: white;
+        display: block;
+        margin: 10px;
+    }
+    
+    .card h2 {
+        margin: 20px 10px 0px;
+        font-weight: 600;
+    }
+    
+    .card p {
+        margin: 0px 10px;
+        margin-bottom: 20px;
+    }
+    
+    .card-container {
+        width: 100%;
+        display: block;
+    }
+    .chart-container {
+        width: 100%;
+    }
+
+    #login-container {
+        width: 95%;
+    }
+
+    #login-panel form input {
+        margin-top: 10px;
+    }
+
+    #login-panel form button {
+        margin-top: 40px;
+    }
+    
 }

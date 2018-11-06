@@ -16,6 +16,13 @@ function logout() {
 	});
 }
 
+function login(user, pass, callback){
+	request('action=login&user='+encodeURIComponent(user)+'&pass='+encodeURIComponent(pass), function() {
+			if(this.readyState == 4 && this.status == 200) {
+				callback(true, this.responseText);
+			}
+		});
+}
 function getvalueat(sensor, time, callback) {
 	request('action=getvalueat&sensor=' + sensor + '&time=' + time, function() {
 		if(this.readyState == 4 && this.status == 200) {
@@ -40,6 +47,41 @@ function getusername(callback) {
 	});
 }
 
+function getusertype(callback) {
+	request('action=getusertype', function() {
+		if(this.readyState == 4 && this.status == 200) {
+			callback(true, this.responseText);
+		}
+	});
+}
+
+function getusers(callback) {
+	request('action=getusers', function() {
+		if(this.readyState == 4 && this.status == 200) {
+			var text = JSON.parse(this.responseText);
+
+			if(text)
+				callback(true, text);
+		}
+	});
+}
+
+function setrole(callback, id, role) {
+	request('action=setrole&id='+encodeURIComponent(id)+'&role='+encodeURIComponent(role), function() {
+		if(this.readyState == 4 && this.status == 200) {
+			callback(true, this.responseText);
+		}
+	});
+}
+
+function changepass(callback, oldpass, newpass) {
+	request('action=changepass&oldpass='+encodeURIComponent(oldpass)+'&newpass='+encodeURIComponent(newpass), function() {
+		if(this.readyState == 4 && this.status == 200) {
+			callback(true, this.responseText);
+		}
+	});
+}
+
 function getsensorlist(callback) {
 	request('action=getsensorlist', function() {
 		if(this.readyState == 4 && this.status == 200) {
@@ -56,6 +98,13 @@ function getconfig(device, name, callback) {
 	});
 }
 
+function getlastvalue(device, callback) {
+	request('action=getlastvalue&sensor=' + encodeURIComponent(device), function() {
+		if(this.readyState == 4 && this.status == 200) {
+			callback(true, JSON.parse(this.responseText));
+		}
+	});
+}
 
 function getsensorlistname(callback) {
 	request('action=getsensorlistname', function() {
@@ -81,6 +130,19 @@ function setconfig(device, name, value, callback) {
 		function() {
 			if(this.readyState == 4 && this.status == 200) {
 				callback(true, this.responseText, device, name, value);
+			}
+		});
+}
+
+//getgraphdata
+function getgraphdata(device, from, to, callback) {
+	request('action=getgraphdata&device='+encodeURIComponent(device)+'&from-date='+encodeURIComponent(from)+'&to-date='+encodeURIComponent(to),
+		function() {
+			if(this.readyState == 4 && this.status == 200) {
+				var text = JSON.parse(this.responseText);
+				
+				if(text)
+					callback(true, text, device);
 			}
 		});
 }

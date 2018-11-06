@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Homealone - Beállítások</title>
+        <title>HomEalone - Beállítások</title>
         
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link rel="stylesheet" href="../lib/fontawesome.min.css">
         <link type="text/css" rel="stylesheet" href="../style/style.css">
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="../lib/jquery.min.js"></script>
         <script src="../lib/chart.min.js"></script>
         
         <script src="../lib/toastr/toastr.min.js"></script>
@@ -23,17 +23,86 @@
             indexFile = "/index.php";
 			window.onload = function() {
                 var username = "";
+                var usertype = "";
                 
 				getusername(function(success, name) {
 					if(success) {
 						username = name;
 						document.getElementById("username").innerHTML = username;
+						document.getElementById("username-conf").innerHTML += username;
 					}
 					else alert("Internal Server Error 500");
 				} );
 
-                //js/graph.custom.js
-                //generateCardGraphs();
+                
+                getusertype(function(s, type) {
+                    if(s == true) {
+                        if(type == "Y") usertype = "Admin";
+                        else if(type == "N") usertype = "Felhasználó";
+                        
+                        document.getElementById("usertype").innerHTML = usertype;
+                        
+                        if(type == "Y") {
+                            var menu = $("#settings-menu ul").html();
+                            $("#settings-menu ul").html(menu + 
+                            '<li><a option="1" href="#">Felhasználók</a></li> <li><a option="2" href="#">Érzékelők</a></li>');
+                        }
+
+                        $("#settings-menu ul li").click(function() {
+                            var menus = ["profile-config", "users-config", "sensor-config"];
+                            
+                            var option = $($(this).children("a")).attr("option");
+                            console.log("Menü");
+
+                            if(option != 0)
+                                if(option == false) return;
+                            var next = "#"+menus[option];
+
+                            menus.splice(option, 1);
+
+                            for(var i = 0; i < menus.length; i++){
+                                $("#"+menus[i]).fadeOut(0);
+                            }
+
+                            $(next).fadeIn(400);
+
+                        });
+                    }
+                });
+                
+                $("#newpass_form").submit(function(e) {
+                    e.preventDefault();
+                    //currpass newpass newpass_again
+                    
+                    var curr = $("#currpass").val();
+                    var newPass = $("#newpass").val();
+                    var newPass_again = $("#newpass_again").val();
+                    
+                    if(curr.trim() == "") return;
+                    if(newPass.trim() == "") return;
+                    if(newPass_again.trim() == "") return;
+
+                    if(newPass != newPass_again) { toastr["error"]("A két jelszónak meg kell egyeznie!", "Hiba!"); return; }
+
+                    changepass(function(s, text) {
+                        if(s == true) {
+                            $("#currpass").val("");
+                            $("#newpass").val("");
+                            $("#newpass_again").val("");
+
+                            if(text == "success")
+                                toastr["success"]("Sikeresen megváltoztattad a jelszót.", "Siker!");
+                            else if(text == "bad-pass")
+                                toastr["error"]("Hibás jelenlegi jelszót adtál meg.", "Hiba!");
+                            else if(text == "bad-data")
+                                toastr["error"]("A jelszavak nem tartalmazhatnak speciális karaktereket.", "Hiba!");
+                            else
+                            toastr["error"]("Ismeretlen hiba történt! ("+text+")", "Hiba!");
+
+                        }
+                    }, curr, newPass);
+
+                });
                 
                 //Generate sensor list.
                 var sList;
@@ -107,8 +176,6 @@
                             $($(div).children("form").children("div").children("input.number")).bind('input', function() { 
                                     var min = $(this).attr("min");
                                     var max = $(this).attr("max");
-
-                                    //alert("asdasdasdasasd");
                                     
                                     var errorElm = $(this).parent("div").children(".errormsg");
                                     
@@ -139,7 +206,6 @@
                                     }
 
                                     errorElm.fadeOut(200);
-                                    //errorElm.html("");
                             });
 
                     
@@ -148,11 +214,38 @@
                         
                     }
 
+                    getusers(function(s, users) {
+                        for(var i = 0; i < users.length; i++) {
+                            var html = $("#users").html();
+
+                            html += '<div class="user-block" style="">'
+                                        +'<span>'+users[i][1]+'</span> <select class="setrole" uid="'+users[i][0]+'">';
+                            
+                            if(users[i][2] == "Y") html += '<option value="Y">Admin</option> <option value="N">Felhasználó</option>';
+                            else html += '<option value="N">Felhasználó</option> <option value="Y">Admin</option>';
+
+                            html += '</select></div>';
+
+                            $("#users").html(html);
+                        }
+
+                        $(".setrole").change(function() {
+                            var id = $(this).attr("uid");
+                            var val = $(this).val();
+
+                            setrole(function(s, t) {
+                                if(t == "success") toastr["success"]("Sikeresen frissítetted a felhasználó csoportját.", "Siker!");
+                                else toastr["error"]("Ismeretlen hiba történt ("+t+")", "Hiba!");
+                            }, id, val);
+                        });
+                    });
+
                     spoilerHandler();
 
                 });
                 
             }
+            
         </script>
 		
     </head>
@@ -162,8 +255,7 @@
             <div class="navbar clear">
                 <div class="menu">
                     <ul>
-                        <!-- <li><a href="#">menu 1</a></li> -->
-                        <li><a href="#"><i class="fas fa-bell"></i></a></li>
+                        <li><a href="/index.php"><i class="fas fa-home"></i></a></li>
                         <li>
                             <div class="dropdown right">
                                 <a href="#" class="dropbtn"><i class="fas fa-user"></i></a>
@@ -183,58 +275,46 @@
             <div id="settings-menu">
                 <ul>
                     <li class="title"><p>Beállítások</p></li>
-                    <li><a href="#">Profil</a></li>
-                    <li><a href="#">Felhasználók</a></li>
-                    <li><a href="#">Érzékelők</a></li>
+                    <li><a option="0" href="#">Profil</a></li>
                 </ul>
                 
             </div>
 
             <div id="settings-main">
-                <div id="sensor-config">
-                    <h3>Érzékelők</h3>
-                    
-                    <!--
-                    <div class="spoiler">
-                        <p>Füst érzékelő</p>
-                        <div class="content">
+                <div id="profile-config">
+                        <h3><i class="fas fa-user"></i> Profil</h3>
 
-                            <div style="display: inline-block;">
-                            <span>display</span><br>
-                            <input type="textbox" placeholder="asd" value="teszt"/>
-                            <br>
+                        <div style="margin: 20px 40px;">
+                            <h2 style="color: black;" id="username-conf"></h2>
+                            <span id="usertype"></span>
 
-                            <span>display</span><br>
-                            <input type="textbox" value="teszt"/>
-                            <br>
-                            </div>
+                            <p class="section"><i class="fas fa-key"></i> Új jelszó</p>
 
-                            <div style="display: inline-block;">
-                            <span>display</span><br>
-                            <input type="textbox" value="teszt"/>
-                            <br>
+                            <form method="POST" action="/settings/index.php" id="newpass_form">
+                                
+                                <input type="password" placeholder="Jelenlegi jelszó" id="currpass"/>
+                                <br>
+                                <input type="password" placeholder="Új jelszó" id="newpass"/>
 
-                            <span>display</span><br>
-                            <input type="textbox" value="teszt"/>
-                            </div>
+                                <input type="password" placeholder="Új jelszó újra" id="newpass_again"/>
 
-                            <div style="display: inline-block;">
-                            <span>display</span><br>
-                            <input type="textbox" value="teszt"/>
-                            <br>
-
-                            <span>display</span><br>
-                            <input type="textbox" value="teszt"/>
-                            </div>
-
+                                <br>
+                                <button style="float: right;">Rendben</button>
+                            </form>
                         </div>
+                </div>
+
+                <div style="display: none" id="users-config">
+                    <h3><i class="fas fa-users"></i> Felhasználók</h3>
+
+                    <div id="users" style="width: 80%; margin: 0 auto;">
                     </div>
 
-                    <div class="spoiler">
-                        <p>Riasztó</p>
-                        <div class="content">asdasdasdsadasd</div>
-                    </div>
-                    -->
+                </div>
+                
+                <div style="display: none" id="sensor-config">
+                    <h3><i class="fas fa-hdd"></i> Érzékelők</h3>
+                    
                 </div>
             </div>
         </div>

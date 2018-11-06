@@ -48,6 +48,40 @@ function spoilerHandler() {
     });
 }
 
+var myChart;
+function updateMainGraph(label, labels, data) {
+    //chartContainer
+    $('#mainChart').remove();
+    $('#chartContainer').append('<canvas id="mainChart" width="250" height="80"><canvas>');
+    var ctx = document.getElementById("mainChart").getContext('2d');
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: label,
+                data: data,
+                backgroundColor: [
+                    'rgba(230, 10, 10, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255,0,0,1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
+}
+
 function getDivElementBySensor(sensor) {
     var divs = document.getElementsByClassName("spoiler");
 
@@ -60,6 +94,11 @@ function getDivElementBySensor(sensor) {
 
     return false;
 }
+
+function isValidTime(time) {
+    return (new Date(time)).getTime() > 0;
+}
+
 
 function submitConfigForm(formelm) {
     var inputs = formelm.getElementsByTagName("input");
@@ -114,7 +153,7 @@ function submitConfigForm(formelm) {
                         spoiler.getElementsByTagName("p")[0].innerHTML = ""+newvalue+" ("+d+")";
                     }
 
-                    if(!writtenOut) toastr["info"]("Sikeresen frissítetted az adatokat! ("+d+")", "Információ");
+                    if(!writtenOut) toastr["success"]("Sikeresen frissítetted az adatokat! ("+d+")", "Siker");
                     writtenOut = true
                 }    
                 else return false;

@@ -1,12 +1,58 @@
+<!DOCTYPE html>
 <html>
 <head>
-	<title>Nagyonokos ház</title>
+		<title>HomEalone - Bejelentkezés</title>
+		
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="stylesheet" href="./lib/fontawesome.min.css">
+		<link type="text/css" rel="stylesheet" href="./style/style.css">
+		<script src="./lib/jquery.min.js"></script>
+		<script src="./lib/chart.min.js"></script>
+		
+		<script src="./lib/toastr/toastr.min.js"></script>
+		<link type="text/css" rel="stylesheet" href="../lib/toastr/toastr.min.css">
+
+		<script src="common.js"></script>
+		<script src="./js/graph.custom.js"></script>
+		<script src="./js/script.js"></script>
+
+		<script>
+			window.onload = function() {
+
+				$("#login-form").submit(function(e) {
+					e.preventDefault();
+					var user = $("#login-user").val();
+					var pass = $("#login-pass").val();
+
+					if(user == "" || pass == "") return;
+					
+					login(user, pass, function(s, t){
+						if(t == "success") location.reload();
+						else if(t == "bad-user") toastr["error"]("Rossz felhasználónév.", "Hiba!");
+						else if(t == "bad-pass") toastr["error"]("Rossz jelszó.", "Hiba!");
+						else toastr["error"]("Ismeretlen hiba. ("+t+")", "Hiba!");
+					});
+				});
+
+			}
+		</script>
 </head>
 <body>
-	<form method="POST">
-		<input name="user" placeholder="user" width=20><br>
-		<input name="pass" placeholder="pass" width=20><br>
-		<input type="submit" value="login">
-	</form>
+	<div id="login-container">
+		
+		<div id="login-panel">
+			<h4>Bejelentkezés</h4>
+			<form id="login-form" method="POST" action="">
+				<input name="user" id="login-user" type="textbox" placeholder="Felhasználónév"><br>
+				<input name="pass" id="login-pass" type="password" placeholder="Jelszó"><br>
+				<button>Bejelentkezés</button>
+			</form>
+		
+		</div>
+		<p>HomEalone 2018 @ <b>ZSzC Csány</b></p>
+	</div>
 </body>
 </html>
+

@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Homealone</title>
+        <title>HomEalone</title>
         
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link rel="stylesheet" href="./lib/fontawesome.min.css">
         <link type="text/css" rel="stylesheet" href="./style/style.css">
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="./lib/jquery.min.js"></script>
 		<script src="./lib/chart.min.js"></script>
-		
+        
+        <script src="./lib/toastr/toastr.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="../lib/toastr/toastr.min.css">
+
         <script src="common.js"></script>
         <script src="./js/graph.custom.js"></script>
         <script src="./js/script.js"></script>
@@ -29,11 +32,71 @@
 
                 //js/graph.custom.js
                 generateCardGraphs();
+
+                
+                //control-form
+                $("#control-form").submit(function(e){
+                    e.preventDefault();
+                    
+                    var sensor = $("#sensors").val();
+                    var from = $("#from-date").val();
+                    var to = $("#to-date").val();
+
+                    if(sensor == "") return;
+
+                    if(isValidTime(from) == false) return;
+                    if(isValidTime(to) == false) return;
+
+                    //alert("("+$("#sensors").val()+"): "+from+" - "+to);
+                    getgraphdata(sensor, from, to, function(s, data, sensor) {
+                        if(s) {
+                            if(data.length>0) {
+
+                                var graph_labels = [];
+                                var graph_data   = [];
+
+                                for(var i = 0; i < data.length; i++) {
+                                    graph_labels[graph_labels.length] = data[i][0];
+                                    graph_data[graph_data.length]     = data[i][1];
+                                }
+
+                                //#graphlabel
+
+                                getconfig(sensor, "suffix", function(s, value) {
+                                    if(s) {
+                                        updateMainGraph("", [], []);
+                                        if(value == "error") value = "";
+
+                                        updateMainGraph(value, graph_labels, graph_data);
+                                        var sensorName = $( "#sensors option:selected" ).text();
+                                        $("#graphlabel").html(sensorName);
+                                    }
+
+                                });
+
+                            }else{
+                                toastr["error"]("Nincs adat erről a szenzorról, ebben az időpontban!<br/>("+$('#sensors option:selected').text()+")", "Hiba");
+                                $("#graphlabel").html("");
+                                updateMainGraph("", [], []);
+                            }
+                        }
+                    });
+
+
+                });
+
 			}
 			
-			getsensorlist(function(success, name) {
-				console.log(name);
-			})
+			getsensorlistname(function(success, sensorlist) {
+                
+                var select = document.getElementById("sensors");
+                if(select == false) return;
+
+                for(var i = 0; i < sensorlist.length; i++) {
+                    select.innerHTML += '<option value="'+sensorlist[i][0]+'">'+sensorlist[i][1]+' ('+sensorlist[i][0]+')</option>';
+                }
+            
+            });
             
 
 		</script>
@@ -45,8 +108,7 @@
             <div class="navbar clear">
                 <div class="menu">
                     <ul>
-                        <!-- <li><a href="#">menu 1</a></li> -->
-                        <li><a href="#"><i class="fas fa-bell"></i></a></li>
+                        <li><a href="/index.php"><i class="fas fa-home"></i></a></li>
                         <li>
                             <div class="dropdown right">
                                 <a href="#" class="dropbtn"><i class="fas fa-user"></i></a>
@@ -62,118 +124,78 @@
             </div>
         </nav>
         
-        <div class="card-container">
+        <div class="card-container" style="">
             <div class="card blue">
-                <h2>30 °C</h2>
-                <p>Jelenlegi hőmérséklet.</p>
+                <h2 id="in-temp-label"> °C</h2>
+                <p>Belső hőmérséklet</p>
                 
                 <div class="chart-container">
-                    <canvas class="canvas" width="" height="50px"></canvas>
+                    <canvas id="in-temp" width="" height="50px"></canvas>
                 </div>
 
             </div>
 
-            <div class="card blue">
-                <h2>30 °C</h2>
-                <p>Jelenlegi hőmérséklet.</p>
+            <div class="card green">
+                <h2 id="out-temp-label"> °C</h2>
+                <p>Külső hőmérséklet</p>
                 <div class="chart-container">
-                    <canvas class="canvas" width="" height="50px"></canvas>
+                    <canvas id="out-temp" width="" height="50px"></canvas>
                 </div>
             </div>
             
-            <div class="card blue">
-                <h2>30 °C</h2>
-                <p>Jelenlegi hőmérséklet.</p>
+            <div class="card yellow">
+                <h2 id="boiler-label"> °C</h2>
+                <p>Kazán</p>
                 <div class="chart-container">
-                    <canvas class="canvas" width="" height="50px"></canvas>
+                    <canvas id="boiler" width="" height="50px"></canvas>
                 </div>
             </div>
             
-            <div class="card blue">
-                <h2>30 °C</h2>
-                <p>Jelenlegi hőmérséklet.</p>
+            <div class="card red">
+                <h2 id="garage-label">Nyitva</h2>
+                <p>Garázskapu</p>
                 <div class="chart-container">
-                    <canvas class="canvas" width="" height="50px"></canvas>
+                    <canvas id="garage" width="" height="50px"></canvas>
                 </div>
                 
             </div>
         </div>
         
 
-		<div class="box" style="width: 40vw;">
-			<canvas id="myChart" width="250" height="200"></canvas>
-			<script>
-				var ctx = document.getElementById("myChart").getContext('2d');
-				var myChart = new Chart(ctx, {
-					type: 'line',
-					data: {
-						labels: ["2018-01-01 01:01:01"],
-						datasets: [{
-							label: 'Hőmérő (°C)',
-							data: [12, 19, 3, 5, 2, 3],
-							backgroundColor: [
-								'rgba(230, 10, 10, 0.2)',
-							],
-							borderColor: [
-								'rgba(255,0,0,1)'
-							],
-							borderWidth: 1
-						}]
-					},
-					options: {
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero:true
-								}
-							}]
-						}
-					}
-				});
-				</script>
-				
-				<p id="teszt"><p>
+        <div class="box">
+            <h3><i class="fas fa-chart-pie"></i> Grafikon</h3>
+
+            <div class="control">
+                <form method="POST" id="control-form" action="/settings/index.php">
+                    <select id="sensors">
+                        <option value="">Válassz szenzort</option>
+                    </select>
+                    <br/>
+
+                    <p>Válaszd ki az időpont elejét:</p>
+                    <input id="from-date" type="datetime-local" name="from-date">
+                    <br/>
+                    
+                    <p>Válaszd ki az időpont végét:</p> 
+                    <input id="to-date" type="datetime-local" name="to-date">
+                    <br/>
+
+                    <button>Küldés</button>
+                </form>
+            </div>
+
+            <h2 id="graphlabel"><h2>
+            <div id="chartContainer" style="width: 90%; margin: 0 auto;">
+                <canvas id="mainChart" width="250" height="80"></canvas>
+            </div>
 				
 				<script>
-					getvalue("C8", function(s, value){
+					/*getvalue("C8", function(s, value){
 						document.getElementById("teszt").innerHTML = "Fok: "+value;
-					});
-				</script>
+					});*/
+                </script>
 				
 		</div>
-    <!--
-        
-        <div style="">
-        <nav>
-            <ul>
-                <li><a href="#">
-                        <div class="dropdown" style="float:right;">
-                                <p class="dropbtn">Menü</p>
-                                <div class="dropdown-content">
-                                    <a href="#">Link 1</a>
-                                    <a href="#">Link 2</a>
-                                    <a href="#">Link 3</a>
-                                </div>
-                            </div>
-                </a></li>
-                <li><a href="#">Menü 2</a></li>
-
-            </ul>
-        </nav>
-    </div>
-    -->
-
-        <!--
-        <div class="dropdown" style="float:right;">
-            <a href="#" class="dropbtn">Right</a>
-            <div class="dropdown-content">
-              <a href="#">Link 1</a>
-              <a href="#">Link 2</a>
-              <a href="#">Link 3</a>
-            </div>
-          </div>
-        -->
-          
           
     </body>
 </html>
